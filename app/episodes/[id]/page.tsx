@@ -1,6 +1,6 @@
 'use client';
 import SmallCharacterCardList from "@/components/SmallCharacterCardList";
-import { EPISODE_QUERY, getItemById } from "@/grophql/RickAndMortyApi";
+import { EPISODE_QUERY, getItemById } from "@/graphql/RickAndMortyApi";
 import { IEpisode } from "@/models/Episode";
 import { FC, useEffect, useState } from "react"
 

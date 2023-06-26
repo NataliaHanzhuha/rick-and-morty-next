@@ -1,7 +1,7 @@
 'use client';
 
 import Pagination from "@/components/Pagination";
-import {  LOCATIONS_QUERY, getFilteredItems } from "@/grophql/RickAndMortyApi";
+import {  LOCATIONS_QUERY, getFilteredItems } from "@/graphql/RickAndMortyApi";
 import { ILocation } from "@/models/Location";
 import Link from "next/link";
 import { FC, useEffect, useState } from "react"

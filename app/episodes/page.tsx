@@ -1,7 +1,7 @@
 'use client';
 
 import Pagination from "@/components/Pagination";
-import { EPISODES_QUERY, getFilteredItems } from "@/grophql/RickAndMortyApi";
+import { EPISODES_QUERY, getFilteredItems } from "@/graphql/RickAndMortyApi";
 import { IEpisode } from "@/models/Episode";
 import Link from "next/link";
 import { FC, useEffect, useState } from "react"

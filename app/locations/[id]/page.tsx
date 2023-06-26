@@ -1,7 +1,7 @@
 'use client';
 
 import SmallCharacterCardList from "@/components/SmallCharacterCardList";
-import { LOCATION_QUERY, getItemById } from "@/grophql/RickAndMortyApi";
+import { LOCATION_QUERY, getItemById } from "@/graphql/RickAndMortyApi";
 import { ILocation } from "@/models/Location";
 import { FC, useEffect, useState } from "react"
 

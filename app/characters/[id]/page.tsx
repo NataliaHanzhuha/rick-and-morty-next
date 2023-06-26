@@ -1,6 +1,6 @@
 'use client';
 
-import { CHARACTER_QUERY, getItemById } from "@/grophql/RickAndMortyApi"
+import { CHARACTER_QUERY, getItemById } from "@/graphql/RickAndMortyApi"
 import { ICharacter } from "@/models/Character"
 import { IDescription } from "@/models/Description";
 import Link from "next/link";

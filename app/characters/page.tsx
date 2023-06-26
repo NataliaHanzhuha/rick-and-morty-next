@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, FC  } from 'react';
-import { CHARACTERS_QUERY, getFilteredItems } from '@/grophql/RickAndMortyApi';
+import { CHARACTERS_QUERY, getFilteredItems } from '@/graphql/RickAndMortyApi';
 import { ICharacter } from '@/models/Character';
 import Pagination from '@/components/Pagination';
 import { useForm, SubmitHandler } from 'react-hook-form';
