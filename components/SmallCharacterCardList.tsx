@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ICharacter } from "../models/Character";
 
-function SmallCharacterCardList({characters, size = 150, styles}: {characters: ICharacter[], size: number, styles: string}) {
+function SmallCharacterCardList({characters, size = 150, styles = ''}: {characters: ICharacter[], size?: number, styles?: string}) {
     const imgSize = () => ` w-[${size}px] h-[${size}px]`;
     const statusColor = (status: string) => {
         switch(status) {
