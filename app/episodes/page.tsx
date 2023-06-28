@@ -1,11 +1,13 @@
 'use client';
 
 import Pagination from "@/components/Pagination";
-import { EPISODES_QUERY, getFilteredItems } from "@/graphql/RickAndMortyApi";
+import { EPISODES_QUERY } from "@/graphql/RickAndMortyApi";
 import { IEpisode } from "@/models/Episode";
+import { useQuery } from "@apollo/client";
 import Link from "next/link";
 import { FC, useEffect, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useDebounce } from "react-use";
 
 interface characterListProps {
 
@@ -21,9 +23,8 @@ const Episodes: FC<characterListProps> = () => {
     const [page, updatePage] = useState<number>(1);
     const [next, updateNext] = useState<boolean>(true);
     const [pages, updatePages] = useState<number>(1);
-    const [loading, updateLoading] = useState<boolean>(true);
 
-    const { register, watch, handleSubmit } = useForm<FilterEpisode>(
+    const { register, watch, handleSubmit, getValues } = useForm<FilterEpisode>(
         {
             defaultValues: {
                 name: '',
@@ -33,55 +34,59 @@ const Episodes: FC<characterListProps> = () => {
     );
 
     const onSubmit: SubmitHandler<FilterEpisode> = () => {
-        updatePage(1)
+        // updatePage(1)
     };
 
-    const filterName = watch('name');
-    const filterEpisode = watch('episode');
 
-    const fetchItems = async (page: number = 1, filter: FilterEpisode = { name: '', episode: ''}) => {
-        try {
-            const data: any = await getFilteredItems(page, filter, EPISODES_QUERY);
-            setEpisodes(data.episodes.results);
-            updatePages(data?.episodes?.info?.pages)
-            updateNext(!!data?.episodes?.info?.next)
-            updateLoading(false)
-        } catch (error) {
-            setEpisodes([]);
-            updatePages(1)
-            updateNext(false)
-            updateLoading(false)
+    const filter = watch();
+    const [, cancel] = useDebounce(
+        () => {
+            refetch({page: page, filter: getValues()});
+        },
+        500,
+        [filter.name, filter.episode, page]
+      );
+
+    const { data, loading, refetch } = useQuery(EPISODES_QUERY, {
+        variables: {
+            page: page,
+            filter: getValues()
         }
-    };
+    });
 
     useEffect(() => {
-        fetchItems(page, { name: filterName, episode: filterEpisode })
-    }, [page, filterName, filterEpisode]);
+        if (!loading) {
+            setEpisodes(data?.episodes?.results ?? []);
+            updatePages(data?.episodes?.info?.pages ?? 1)
+            updateNext(!!data?.episodes?.info?.next ?? false);
+        }
+    }, [data, loading])
 
     useEffect(() => {
         updatePage(1);
-    }, [filterName, filterEpisode])
+    }, [filter.name, filter.episode])
 
     return (<>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex justify-center">
-            name:
-            <input type="text" {...register("name")} />
-            episode:
-            <input type="text" {...register("episode")} />
+        <form onSubmit={handleSubmit(onSubmit)} className='form-wrapper'>
+            <label className='form-label' htmlFor='inputName' >Name:</label>
+            <input type="text" className='input-text' {...register("name")} id="inputName" />
+
+            <label className='form-label' htmlFor='inputEpisode' >Episode:</label>
+            <input type="text" className='input-text' {...register("episode")} id="inputEpisode" />
+
+            <Pagination page={page} next={next} loading={loading} pages={pages} updatePage={(page) => updatePage(page)} />
 
         </form>
 
-        <Pagination page={page} next={next} loading={loading} pages={pages} updatePage={(page) => updatePage(page)} />
-
-        <ul className='flex gap-3 flex-wrap justify-center'>
+        <ul className='list-wrapper'>
             {episodes.map((episode: IEpisode) => {
-                return (<li className='list-none flex bg-cover  bg-no-repeat w-[250px] h-[150px]'
+                return (<li className='list-none flex w-[220px] h-[150px]'
                     key={episode.id}>
                     <Link href={'/episodes/' + episode.id}
-                        className='text-white font-bold backdrop-brightness-75 hover:backdrop-brightness-50 cursor-pointer flex justify-center w-full flex-col'>
-                        <h2>{episode.name}</h2>
-                        <p>{episode.episode}</p>
+                        className='list-link'>
+                        <h2 className="font-bold text-accent">{episode.name}</h2>
+                        <p className="text-biege">{episode.episode}</p>
                     </Link>
                 </li>)
             })}

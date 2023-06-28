@@ -13,6 +13,11 @@ module.exports = {
       sepia: {
         50: '.5',
         75: '.75',
+      },
+      colors: {
+        'dark-green': '#223843',
+        'biege': '#DBD3D8',
+        'accent': '#d77a61'
       }
     }
   },

@@ -28,7 +28,7 @@ const Character: FC<characterListProps> = ({params}) => {
     }
   
     return !!character?.id
-        ? (<div className='flex flex-col gap-3 align-top m-5 w-full'>
+        ? (<div className='flex flex-col gap-3 align-top m-5 w-full max-h-[90vh]'>
             <div className='flex gap-3 align-top w-full'>
                 <img src={character?.image} 
                 width="200px" 
