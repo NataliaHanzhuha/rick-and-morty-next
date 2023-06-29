@@ -29,7 +29,7 @@ const Character: FC<characterListProps> = ({ params }) => {
                 </h4>
 
 
-                <div className="flex flex-col items-center gap-3 align-top w-full max-h-[95vh] overflow-y-auto">
+                <div className="flex flex-col items-center gap-3 align-top w-full max-h-[85vh] overflow-y-auto">
                     <h3 className="header">Characters</h3>
                     <SmallCharacterCardList characters={episode?.characters ?? []}
                         styles="justify-start"
