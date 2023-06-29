@@ -1,78 +1,95 @@
 'use client';
 
-import { CHARACTER_QUERY, getItemById } from "@/graphql/RickAndMortyApi"
-import { ICharacter } from "@/models/Character"
+import { CHARACTER_QUERY } from "@/graphql/RickAndMortyApi"
+import { ICharacter } from "@/models/Character";
 import { IDescription } from "@/models/Description";
+import { useQuery } from "@apollo/client";
 import Link from "next/link";
 import { FC, useEffect, useState } from "react"
 
 interface characterListProps {
-params: {id: number}
+    params: { id: number }
 }
 
-const Character: FC<characterListProps> = ({params}) => {
-    const [character, setCharacter] = useState<ICharacter>();
+const Character: FC<characterListProps> = ({ params }) => {
+    const [character, setCharacter] = useState<ICharacter | null>(null);
+    const { data, refetch, loading } = useQuery(CHARACTER_QUERY, {
+        variables: { id: params.id }
+    })
 
     useEffect(() => {
-       getItemById(params.id,  CHARACTER_QUERY, 'character')
-       .then((data: ICharacter) => {
-        setCharacter(data);
-       });
+        refetch().then((res: any) => setCharacter(res.data.character))
     }, [params.id]);
 
-    const locationLink = (description: IDescription) => {
-        const classes = 'w-full border-b border-slate-700 text-blue-500'
-        return description.id 
-        ? <Link className={classes} href={'/locations/' + description.id}>{description.name}</Link>
-        : <div className={classes + ' cursor-not-allowed'}>{description.name}</div>
+    const locationLink = (description?: IDescription) => {
+        const classes = 'w-full text-accent font-bold'
+        return !!description?.id
+            ? <Link className={classes} href={'/locations/' + description.id}>{description?.name}</Link>
+            : <div className={classes + ' cursor-not-allowed'}>{description?.name}</div>
     }
-  
-    return !!character?.id
-        ? (<div className='flex flex-col gap-3 align-top m-5 w-full max-h-[90vh]'>
-            <div className='flex gap-3 align-top w-full'>
-                <img src={character?.image} 
-                width="200px" 
-                height="200px" 
-                alt={character.name + ' image'}
-                className='h-[200px] w-[200px]'  />
 
-                <div className='flex flex-col w-full gap-3'>
-                    <div className='flex gap-2 w-full max-w-lg'>
-                        <span>Name:</span>
-                        <h4 className='w-full border-b border-slate-700 '>{character?.name}</h4>
-                    </div>
-                    <div className='flex gap-2 w-full max-w-lg'>
-                        <span>Species: </span>
-                        <p className='w-full border-b border-slate-700 '>{character?.species ?? '-'}</p>
-                    </div>
-                    <div className='flex gap-2 w-full max-w-lg'>
-                        <span>Status: </span>
-                        <p className='w-full border-b border-slate-700 '>{character?.status}</p>
-                    </div>
-                    <div className='flex gap-2 w-full max-w-lg'>
-                        <span>Location: </span>
-                        {locationLink(character.location)}
-                    </div>
-                    <div className='flex gap-2 w-full max-w-lg'>
-                        <span>Origin: </span>
-                        {locationLink(character.location)}
-                    </div>
+    const statusColor = (status?: string) => {
+        switch (status) {
+            case 'Alive': return 'green';
+            case 'Dead': return 'red';
+            case 'unknown': return 'gray';
+        }
+    }
 
-                    <div className='flex flex-col gap-2 w-full max-w-lg mt-5'>
-                        <h3>Episodes</h3>
+    return <>{loading
+        ? <div>Loading...</div>
+        : <div className="flex flex-col w-full max-h-[95vh] overflow-y-auto">
+            <div className='flex gap-3 align-top w-full justify-center'>
+                <img src={character?.image}
+                    width="200px"
+                    height="200px"
+                    alt={character?.name + ' image'}
+                    className='h-[200px] w-[200px] rounded-2xl' />
 
-                        <ul className='flex flex-wrap gap-2'>
-                            {character?.episode?.map((ep: any) => {
-                                return (<Link key={ep.id}
-                                    className='border border-gray-500 p-[5px] rounded-md text-blue-500' 
-                                href={'/episodes/' + ep?.id}>Episode {ep?.id}:  {ep.name}</Link>)
-                            })}
-                        </ul>
+                <div className="flex flex-col gap-3 p-3 border rounded-xl border-biege">
+                    <div className='flex gap-2 w-full max-w-lg'>
+                        <span className="label">Name:</span>
+                        <h4 className='description'>{character?.name}</h4>
+                    </div>
+                    <div className='flex gap-2 w-full max-w-lg'>
+                        <span className="label" >Species: </span>
+                        <p className='description'>{character?.species ?? '-'}</p>
+                    </div>
+                    <div className='flex gap-2 w-full max-w-lg'>
+                        <span className="label">Status: </span>
+                        <p className='description flex items-center gap-3'>
+                            {character?.status}
+                            <span className="rounded-full w-3 h-3 block"
+                                style={{ backgroundColor: statusColor(character?.status) }}></span>
+                        </p>
+                    </div>
+                    <div className='flex gap-2 w-full max-w-lg'>
+                        <span className="label">Location: </span>
+                        {locationLink(character?.location)}
+                    </div>
+                    <div className='flex gap-2 w-full max-w-lg'>
+                        <span className="label">Origin: </span>
+                        {locationLink(character?.location)}
                     </div>
                 </div>
+
             </div>
-        </div>)
-        : <>No such character</>
+
+
+            <div className='flex flex-col justify-center items-center gap-2 p-3 w-full mt-4 border rounded-xl border-biege'>
+                <h3 className="header">Episodes</h3>
+
+                <ul className='flex flex-wrap gap-2'>
+                    {character?.episode?.map((ep: any) => {
+                        return (<Link key={ep.id}
+                            className='border border-gray-500 p-[5px] rounded-md text-primary'
+                            href={'/episodes/' + ep?.id}>E{ep?.id}:  {ep.name}</Link>)
+                    })}
+                </ul>
+            </div>
+        </div>
+    }
+    </>
 
 }
 

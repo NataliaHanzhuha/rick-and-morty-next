@@ -17,7 +17,8 @@ module.exports = {
       colors: {
         'dark-green': '#223843',
         'biege': '#DBD3D8',
-        'accent': '#d77a61'
+        'accent': '#d77a61',
+        'primary': '#D8B4A0'
       }
     }
   },

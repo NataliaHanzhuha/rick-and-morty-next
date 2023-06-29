@@ -1,20 +1,4 @@
 import { gql } from '@apollo/client';
-import request from 'graphql-request';
-
-export const getFilteredItems = async(page: number, filter: any, query: any) => await request(
-  YOUR_GRAPHQL_ENDPOINT,
-  query,
-{
-  page: page,
-  filter: {...filter}
-}
-);
-
-export const getItemById = async(id: number, query: any, field: string) => await request(
-  YOUR_GRAPHQL_ENDPOINT,
-  query, 
-  {id}
-).then((data: any) => data[field])
 
 export const YOUR_GRAPHQL_ENDPOINT = 'https://rickandmortyapi.com/graphql';
 

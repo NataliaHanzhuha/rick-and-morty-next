@@ -1,45 +1,43 @@
 'use client';
 import SmallCharacterCardList from "@/components/SmallCharacterCardList";
-import { EPISODE_QUERY, getItemById } from "@/graphql/RickAndMortyApi";
+import { EPISODE_QUERY } from "@/graphql/RickAndMortyApi";
 import { IEpisode } from "@/models/Episode";
+import { useQuery } from "@apollo/client";
 import { FC, useEffect, useState } from "react"
 
 interface characterListProps {
-params: {id: number}
+    params: { id: number }
 }
 
-const Character: FC<characterListProps> = ({params}) => {
+const Character: FC<characterListProps> = ({ params }) => {
     const [episode, setEpisode] = useState<IEpisode>();
+    const { refetch, loading } = useQuery(EPISODE_QUERY, {
+        variables: { id: params.id }
+    })
 
     useEffect(() => {
-       getItemById(params.id,  EPISODE_QUERY, 'episode')
-       .then((data: IEpisode) => {
-        setEpisode(data);
-       });
+        refetch().then((res: any) => setEpisode(res.data.episode))
     }, [params.id]);
-    
-    return <>
 
-        <div className='flex flex-col gap-3 align-top m-5 w-full'>
-            <div className='flex flex-col w-full gap-3'>
-                <div className='flex gap-2 w-full max-w-lg'>
-                    <span>Name:</span>
-                    <h4 className='w-full border-b border-slate-700 '>{episode?.name}</h4>
+    return <>{
+        !!loading
+            ? <div>Loading...</div>
+            : <div className='flex flex-col gap-3 align-top m-5 w-full'>
+
+                <h4 className='description text-center text-2xl'>
+                    {episode?.episode} {episode?.name} ({episode?.air_date})
+                </h4>
+
+
+                <div className="flex flex-col items-center gap-3 align-top w-full max-h-[95vh] overflow-y-auto">
+                    <h3 className="header">Characters</h3>
+                    <SmallCharacterCardList characters={episode?.characters ?? []}
+                        styles="justify-start"
+                        size={150}></SmallCharacterCardList>
                 </div>
-                <div className='flex gap-2 w-full max-w-lg'>
-                    <span>Episode: </span>
-                    <p className='w-full border-b border-slate-700 '>{episode?.episode}</p>
-                </div>
-                <div className='flex gap-2 w-full max-w-lg'>
-                    <span>Air_Date: </span>
-                    <p className='w-full border-b border-slate-700 '>{episode?.air_date}</p>
-                </div>
+
             </div>
-
-            <SmallCharacterCardList characters={episode?.characters ?? []}></SmallCharacterCardList>
-        </div>
-
-    </>
+    }</>
 }
 
 export default Character
