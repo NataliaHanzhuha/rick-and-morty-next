@@ -1,5 +1,6 @@
 'use client';
 
+import Loading from "@/components/Loading";
 import { CHARACTER_QUERY } from "@/graphql/RickAndMortyApi"
 import { ICharacter } from "@/models/Character";
 import { IDescription } from "@/models/Description";
@@ -37,16 +38,16 @@ const Character: FC<characterListProps> = ({ params }) => {
     }
 
     return <>{loading
-        ? <div>Loading...</div>
+        ? <Loading />
         : <div className="flex flex-col w-full max-h-[95vh] overflow-y-auto">
-            <div className='flex gap-3 align-top w-full justify-center'>
+            <div className='flex gap-3 w-full justify-center xs:items-center xs:flex-col sm:flex-col md:flex-row'>
                 <img src={character?.image}
                     width="200px"
                     height="200px"
                     alt={character?.name + ' image'}
                     className='h-[200px] w-[200px] rounded-2xl' />
 
-                <div className="flex flex-col gap-3 p-3 border rounded-xl border-biege">
+                <div className="flex flex-col gap-3 p-3 border rounded-xl border-biege w-full">
                     <div className='flex gap-2 w-full max-w-lg'>
                         <span className="label">Name:</span>
                         <h4 className='description'>{character?.name}</h4>

@@ -1,4 +1,5 @@
 'use client';
+import Loading from "@/components/Loading";
 import SmallCharacterCardList from "@/components/SmallCharacterCardList";
 import { EPISODE_QUERY } from "@/graphql/RickAndMortyApi";
 import { IEpisode } from "@/models/Episode";
@@ -21,7 +22,7 @@ const Character: FC<characterListProps> = ({ params }) => {
 
     return <>{
         !!loading
-            ? <div>Loading...</div>
+            ? <Loading />
             : <div className='flex flex-col gap-3 align-top m-5 w-full'>
 
                 <h4 className='description text-center text-2xl'>

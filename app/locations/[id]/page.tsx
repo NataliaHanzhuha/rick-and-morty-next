@@ -1,5 +1,6 @@
 'use client';
 
+import Loading from "@/components/Loading";
 import SmallCharacterCardList from "@/components/SmallCharacterCardList";
 import { LOCATION_QUERY } from "@/graphql/RickAndMortyApi";
 import { ILocation } from "@/models/Location";
@@ -22,7 +23,7 @@ const Location: FC<locationProps> = ({ params }) => {
 
     return <>{
         !!loading
-            ? <div>Loading...</div>
+            ? <Loading />
             : <div className='flex flex-col gap-3 align-top m-5 w-full'>
                 <h3 className="header active">{location?.name}</h3>
 

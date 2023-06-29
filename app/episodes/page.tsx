@@ -1,5 +1,6 @@
 'use client';
 
+import Loading from "@/components/Loading";
 import Pagination from "@/components/Pagination";
 import { EPISODES_QUERY } from "@/graphql/RickAndMortyApi";
 import { IEpisode } from "@/models/Episode";
@@ -41,11 +42,11 @@ const Episodes: FC<characterListProps> = () => {
     const filter = watch();
     const [, cancel] = useDebounce(
         () => {
-            refetch({page: page, filter: getValues()});
+            refetch({ page: page, filter: getValues() });
         },
         500,
         [filter.name, filter.episode, page]
-      );
+    );
 
     const { data, loading, refetch } = useQuery(EPISODES_QUERY, {
         variables: {
@@ -66,8 +67,7 @@ const Episodes: FC<characterListProps> = () => {
         updatePage(1);
     }, [filter.name, filter.episode])
 
-    return (<>
-
+    return <>
         <form onSubmit={handleSubmit(onSubmit)} className='form-wrapper'>
             <label className='form-label' htmlFor='inputName' >Name:</label>
             <input type="text" className='input-text' {...register("name")} id="inputName" />
@@ -78,20 +78,22 @@ const Episodes: FC<characterListProps> = () => {
             <Pagination page={page} next={next} loading={loading} pages={pages} updatePage={(page) => updatePage(page)} />
 
         </form>
-
-        <ul className='list-wrapper'>
-            {episodes.map((episode: IEpisode) => {
-                return (<li className='list-none flex w-[220px] h-[150px]'
-                    key={episode.id}>
-                    <Link href={'/episodes/' + episode.id}
-                        className='list-link'>
-                        <h2 className="font-bold text-accent">{episode.name}</h2>
-                        <p className="text-biege">{episode.episode}</p>
-                    </Link>
-                </li>)
-            })}
-        </ul>
-    </>)
+        {
+            loading
+                ? <Loading />
+                : <ul className='list-wrapper'>
+                    {episodes.map((episode: IEpisode) => {
+                        return (<li className='list-none flex w-[220px] h-[150px]'
+                            key={episode.id}>
+                            <Link href={'/episodes/' + episode.id}
+                                className='list-link'>
+                                <h2 className="font-bold text-accent">{episode.name}</h2>
+                                <p className="text-biege">{episode.episode}</p>
+                            </Link>
+                        </li>)
+                    })}
+                </ul>
+        }</>
 }
 
 export default Episodes;

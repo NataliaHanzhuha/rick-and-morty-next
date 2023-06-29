@@ -8,6 +8,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useQuery } from '@apollo/client';
 import SmallCharacterCardList from '@/components/SmallCharacterCardList';
 import { useDebounce } from 'react-use';
+import Loading from '@/components/Loading';
 
 interface characterListProps {
 
@@ -81,7 +82,7 @@ const Characters: FC<characterListProps> = () => {
         </form>
 
         {loading
-            ? <p>Loading...</p>
+            ? <Loading />
             : <SmallCharacterCardList characters={characters} size={200} styles="owerflow-auto max-h-[90vh]" />
         }
 

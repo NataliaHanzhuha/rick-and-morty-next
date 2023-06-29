@@ -19,6 +19,9 @@ module.exports = {
         'biege': '#DBD3D8',
         'accent': '#d77a61',
         'primary': '#D8B4A0'
+      },
+      screens: {
+        'xs': '75px',
       }
     }
   },

@@ -1,5 +1,6 @@
 'use client';
 
+import Loading from "@/components/Loading";
 import Pagination from "@/components/Pagination";
 import { LOCATIONS_QUERY } from "@/graphql/RickAndMortyApi";
 import { ILocation } from "@/models/Location";
@@ -40,12 +41,12 @@ const LocationsList: FC<characterListProps> = () => {
     const [, cancel] = useDebounce(
         () => {
             console.log(page, filter);
-            
-            refetch({page: page, filter: getValues()});
+
+            refetch({ page: page, filter: getValues() });
         },
         500,
-        [filter.name,filter.type, page]
-      );
+        [filter.name, filter.type, page]
+    );
 
     const { data, loading, refetch } = useQuery(LOCATIONS_QUERY, {
         variables: {
@@ -64,11 +65,11 @@ const LocationsList: FC<characterListProps> = () => {
 
     useEffect(() => {
         console.log('f ch', filter, page);
-        
+
         updatePage(1);
     }, [filter.name, filter.type])
 
-    return (<>
+    return <>
         <form onSubmit={handleSubmit(onSubmit)} className='form-wrapper'>
             <label className='form-label' htmlFor='inputName' >Name:</label>
             <input type="text" className='input-text' {...register("name")} id="inputName" />
@@ -76,27 +77,29 @@ const LocationsList: FC<characterListProps> = () => {
             <label className='form-label' htmlFor='inputType' >Type:</label>
             <input type="text" className='input-text' {...register("type")} id="inputType" />
 
-            <Pagination page={page} 
-            next={next} 
-            loading={loading} 
-            pages={pages} 
-            updatePage={(page) => updatePage(page)} />
+            <Pagination page={page}
+                next={next}
+                loading={loading}
+                pages={pages}
+                updatePage={(page) => updatePage(page)} />
         </form>
-
-        <ul className='list-wrapper'>
-            {locations.map((location: ILocation) => {
-                return (<li className='list-none flex w-[220px] h-[150px]'
-                    key={location.id}>
-                    <Link href={'/locations/' + location.id}
-                        className='list-link'>
-                        <h2 className="text-accent font-bold">{location.name}</h2>
-                        <p>Dimention: <span className="font-bold">{location.dimension}</span> </p>
-                        <p>Residents: <span className="font-bold">{location.residents.length}</span></p>
-                    </Link>
-                </li>)
-            })}
-        </ul>
-    </>)
+        {
+            loading
+                ? <Loading />
+                : <ul className='list-wrapper'>
+                    {locations.map((location: ILocation) => {
+                        return (<li className='list-none flex w-[220px] h-[150px]'
+                            key={location.id}>
+                            <Link href={'/locations/' + location.id}
+                                className='list-link'>
+                                <h2 className="text-accent font-bold">{location.name}</h2>
+                                <p>Dimention: <span className="font-bold">{location.dimension}</span> </p>
+                                <p>Residents: <span className="font-bold">{location.residents.length}</span></p>
+                            </Link>
+                        </li>)
+                    })}
+                </ul>
+        }</>
 }
 
 export default LocationsList;

@@ -30,7 +30,7 @@ const Template: FC<temlateProps> = ({children}) => {
             {routerLinks.map(styledLink)}
         </nav>
         <ApolloProvider client={client}>
-        <div className="flex gap-4 min-h-[100vh] h-[100vh] pr-4 pl-4" >{children}</div>
+        <div className="flex gap-4 min-h-[100vh] h-[100vh] pr-4 pl-4 lg:flex-row md:flex-col xs:flex-col" >{children}</div>
         </ApolloProvider>
     </section>
 }
